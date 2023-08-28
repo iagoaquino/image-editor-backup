@@ -146,5 +146,41 @@ namespace Scripts.Effects
 
             return outputTexture;
         }
+        public static Texture2D TransformacaoLinear(Texture2D inputTexture, int min, int max, int output)
+        {
+            Color32[] pixels = inputTexture.GetPixels32();
+
+            Color32[] linearPixels = new Color32[pixels.Length];
+
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                int redLinear = pixels[i].r;
+                int greenLinear = pixels[i].g;
+                int blueLinear = pixels[i].b;
+                if (pixels[i].r >= min  && pixels[i].r <= max)
+                {
+                    redLinear = output;
+                }
+
+                if (pixels[i].g >= min && pixels[i].g <= max)
+                {
+                    greenLinear = output;                
+                }
+
+                if (pixels[i].b >= min && pixels[i].b <= max)
+                {
+                    blueLinear = output;
+                }
+
+                linearPixels[i] = new Color32((byte)redLinear, (byte)greenLinear, (byte)blueLinear, pixels[i].a);
+            }
+
+            Texture2D outputTexture = new Texture2D(inputTexture.width, inputTexture.height);
+            outputTexture.SetPixels32(linearPixels);
+            outputTexture.Apply();
+
+            return outputTexture;
+        }
     }
+
 }

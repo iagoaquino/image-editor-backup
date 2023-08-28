@@ -45,12 +45,26 @@ public class Manager : MonoBehaviour
     public Slider transformationLogaritimicSlider;
     public Text transformationLogaritimicTextLevel;
 
+    [Header("Transformacao Linear Control")]
+    public bool transformationLinearActive;
+    public int  minLevel;
+    public int  maxLevel;
+    public int  outputLevel;
+    public Slider maxSlider;
+    public Slider minSlider;
+    public Slider outputSlider;
+    public Text minTextLevel;
+    public Text maxTextLevel;
+    public Text outputTextLevel;
+    public GameObject transformationLinearPanel;
+
     private void Start()
     {
         negativeActive = false;
         thresholdActive = false;
         gamaCorrectionActive = false;
         transformationLogaritimicActive = false;
+        transformationLinearActive = false;
 
         if (inputRender != null)
         {
@@ -126,6 +140,10 @@ public class Manager : MonoBehaviour
         {
             outputTexture = Effects.TransformacaoLogaritimica(inputTexture, transformationLogaritimicLevel);
         }
+        else if (transformationLinearActive)
+        {
+            outputTexture = Effects.TransformacaoLinear(inputTexture, maxLevel,minLevel, outputLevel);
+        }
         else
         {  
             outputTexture = inputTexture;
@@ -173,6 +191,13 @@ public class Manager : MonoBehaviour
                     gamaCorrectionActive = false;
                     transformationLogaritimicActive = true;
                     break;
+                case 5: // TransformationLogaritimic
+                    negativeActive = false;
+                    thresholdActive = false;
+                    gamaCorrectionActive = false;
+                    transformationLogaritimicActive = false;
+                    transformationLinearActive = true;
+                    break;
                 default:
                     break;
             }
@@ -187,6 +212,7 @@ public class Manager : MonoBehaviour
         thresholdPanel.SetActive(thresholdActive);
         gamaCorrectionPanel.SetActive(gamaCorrectionActive);
         transformationLogaritimicPanel.SetActive(transformationLogaritimicActive);
+        transformationLinearPanel.SetActive(transformationLinearActive);
 
         // Consome e retorna para interface os valores de acordo com o painel ativo.
         if ( negativeActive )
@@ -210,6 +236,15 @@ public class Manager : MonoBehaviour
         {
             transformationLogaritimicLevel = transformationLogaritimicSlider.value;
             transformationLogaritimicTextLevel.text = transformationLogaritimicLevel.ToString();
+        }
+        else if (transformationLinearActive)
+        {
+            maxLevel = (int) maxSlider.value;
+            maxTextLevel.text = maxLevel.ToString();
+            minLevel = (int) minSlider.value;
+            minTextLevel.text = minLevel.ToString();
+            outputLevel = (int)outputSlider.value;
+            outputTextLevel.text = outputLevel.ToString();
         }
     }
 
