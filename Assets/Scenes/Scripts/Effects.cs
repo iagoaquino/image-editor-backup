@@ -146,7 +146,7 @@ namespace Scripts.Effects
 
             return outputTexture;
         }
-        public static Texture2D TransformacaoLinear(Texture2D inputTexture, int min, int max, int output)
+        public static Texture2D TransformacaoLinear(Texture2D inputTexture, int[,] pontos, int tamanho)
         {
             Color32[] pixels = inputTexture.GetPixels32();
 
@@ -157,21 +157,23 @@ namespace Scripts.Effects
                 int redLinear = pixels[i].r;
                 int greenLinear = pixels[i].g;
                 int blueLinear = pixels[i].b;
-                if (pixels[i].r >= min  && pixels[i].r <= max)
+                for (int j = 0; j < tamanho; j++)
                 {
-                    redLinear = output;
-                }
+                    if (pixels[i].r >= pontos[j, 0] && pixels[i].r <= pontos[j, 1])
+                    {
+                        redLinear = pontos[j, 2];
+                    }
 
-                if (pixels[i].g >= min && pixels[i].g <= max)
-                {
-                    greenLinear = output;                
-                }
+                    if (pixels[i].g >= pontos[j, 0] && pixels[i].g <= pontos[j, 1])
+                    {
+                        greenLinear = pontos[j, 2];
+                    }
 
-                if (pixels[i].b >= min && pixels[i].b <= max)
-                {
-                    blueLinear = output;
+                    if (pixels[i].b >= pontos[j, 0] && pixels[i].b <= pontos[j, 1])
+                    {
+                        blueLinear = pontos[j, 2];
+                    }
                 }
-
                 linearPixels[i] = new Color32((byte)redLinear, (byte)greenLinear, (byte)blueLinear, pixels[i].a);
             }
 

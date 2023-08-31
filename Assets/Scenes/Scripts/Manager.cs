@@ -57,6 +57,8 @@ public class Manager : MonoBehaviour
     public Text maxTextLevel;
     public Text outputTextLevel;
     public GameObject transformationLinearPanel;
+    public int[,] pontos = new int[10,3];
+    public int contadorPos = 0;
 
     private void Start()
     {
@@ -91,6 +93,17 @@ public class Manager : MonoBehaviour
     }
     public void CreateMap(Texture2D inputTexture) {
         Effects.ColorMap(inputTexture);
+    }
+    public void adcionarPontos() {
+        if (minLevel <= maxLevel)
+        {
+            pontos[contadorPos, 0] = minLevel;
+            pontos[contadorPos, 1] = maxLevel;
+            pontos[contadorPos, 2] = outputLevel;
+            contadorPos++;
+            SelectEffect();
+        }
+        
     }
     public void RenderManager()
     {
@@ -142,7 +155,7 @@ public class Manager : MonoBehaviour
         }
         else if (transformationLinearActive)
         {
-            outputTexture = Effects.TransformacaoLinear(inputTexture, maxLevel,minLevel, outputLevel);
+            outputTexture = Effects.TransformacaoLinear(inputTexture, pontos, contadorPos);
         }
         else
         {  
