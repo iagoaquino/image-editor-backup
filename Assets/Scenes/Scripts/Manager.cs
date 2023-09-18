@@ -6,10 +6,12 @@ using Scripts.Effects;
 public class Manager : MonoBehaviour
 {
     [Header("Render Control")]
+    public Texture2D[] lineImagem =  new Texture2D[100];
     public Texture2D inputTexture;
     public Texture2D outputTexture;
     public Image inputRender;
     public Image outputRender;
+    public int posLine = 0;
 
     [Header("Dropdown Control")]
     public Dropdown dropdown; 
@@ -75,12 +77,31 @@ public class Manager : MonoBehaviour
                     new Rect(0, 0, inputTexture.width, inputTexture.height),
                     Vector2.zero
             );
-
+            lineImagem[0] = inputTexture;
             outputRender.sprite = inputRender.sprite;
 
         }
     }
-
+    public void ResetarPontos()
+    {
+        contadorPos = 0;
+    }
+    public void AplicarFila(int valor)
+    {
+        if(valor < 0) { 
+            if(posLine > 0)
+            {
+                posLine -= 1;
+            }
+        }else if (valor > 0)
+        {
+            if(posLine < 99)
+            {
+                posLine += 1;
+            }
+        }
+        inputTexture = lineImagem[posLine];
+    }
     private void Update()
     {
         DropdownManager();
@@ -88,6 +109,7 @@ public class Manager : MonoBehaviour
 
         if(Input.GetMouseButtonUp(0))
         {
+            AplicarFila(0);
             RenderManager();
         }
     }
@@ -105,6 +127,20 @@ public class Manager : MonoBehaviour
         }
         
     }
+    public void ChamarEfeito()
+    {
+        SelectEffect();
+        lineImagem[posLine+1] = outputTexture;
+        posLine += 1;
+        if (outputRender != null)
+        {
+            outputRender.sprite = Sprite.Create(
+                    outputTexture,
+                    new Rect(0, 0, outputTexture.width, outputTexture.height),
+                    Vector2.zero
+            );
+        }
+    }
     public void RenderManager()
     {
         if (inputTexture != null)
@@ -118,11 +154,7 @@ public class Manager : MonoBehaviour
                         Vector2.zero
                 );
             }
-
-            //Chama o efeitos da classe Effects
             SelectEffect();
-
-            //Renderiza no painel de saúa
             if (outputRender != null)
             {
                 outputRender.sprite = Sprite.Create(
@@ -131,7 +163,6 @@ public class Manager : MonoBehaviour
                         Vector2.zero
                 );
             }
-
         }
     }
 
@@ -177,6 +208,7 @@ public class Manager : MonoBehaviour
                     thresholdActive = false;
                     gamaCorrectionActive = false;
                     transformationLogaritimicActive = false;
+                    transformationLinearActive = false;
                     break;
 
                 case 1: //Negativo
@@ -184,6 +216,7 @@ public class Manager : MonoBehaviour
                     thresholdActive = false;
                     gamaCorrectionActive = false;
                     transformationLogaritimicActive = false;
+                    transformationLinearActive = false;
                     break;
 
                 case 2: // Threshold
@@ -191,18 +224,21 @@ public class Manager : MonoBehaviour
                     thresholdActive = true;
                     gamaCorrectionActive = false;
                     transformationLogaritimicActive = false;
+                    transformationLinearActive = false;
                     break;
                 case 3: // CorrecaoGama
                     negativeActive = false;
                     thresholdActive = false;
                     gamaCorrectionActive = true;
                     transformationLogaritimicActive = false;
+                    transformationLinearActive = false;
                     break;
                 case 4: // TransformationLogaritimic
                     negativeActive = false;
                     thresholdActive = false;
                     gamaCorrectionActive = false;
                     transformationLogaritimicActive = true;
+                    transformationLinearActive = false;
                     break;
                 case 5: // TransformationLogaritimic
                     negativeActive = false;
